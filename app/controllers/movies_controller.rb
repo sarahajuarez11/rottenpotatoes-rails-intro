@@ -54,7 +54,9 @@ class MoviesController < ApplicationController
 
   end
 
-  
+  def new
+    # default: render 'new' template
+  end
 
   def create
     @movie = Movie.create!(params[:movie])
