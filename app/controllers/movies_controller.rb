@@ -7,33 +7,6 @@ class MoviesController < ApplicationController
   end
 
   def index
-    
-    #@all_ratings = Movie.ratings
-    #puts @all_ratings
-
-    #if params[:ratings]
-      #session[:ratings] = params[:ratings]
-      #@selected_ratings = params[:ratings]
-    #elsif session[:ratings]
-      #@selected_ratings = session[:ratings]
-    #else
-      #@selected_ratings = Hash[@all_ratings.zip([1,1,1,1])]
-    #end
-
-    #sort = params[:sort_by]
-    #if params[:sort_by] == 'title'
-      #session[:sort_by] == 'title'
-      
-      #@movies = Movie.order(sort).where(rating: @selected_ratings.keys)
-    #elsif params[:sort_by] == 'release_date'
-      #puts "Line 52"
-      #@movies = Movie.order('release_date').where(rating: @selected_ratings.keys)
-    #elsif session[:sort_by]
-      #redirect_to movies_path(sort: session[:sort_by], rating: @selected_ratings.keys)
-    #else
-      #@movies = Movie.where(rating: @selected_ratings.keys)
-    
-    #end
 
     if params.key?(:sort_by)
 			session[:sort_by] = params[:sort_by]
