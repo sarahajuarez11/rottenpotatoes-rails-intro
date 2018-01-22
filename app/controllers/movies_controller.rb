@@ -10,28 +10,6 @@ class MoviesController < ApplicationController
     
     @all_ratings = Movie.ratings
     puts @all_ratings
-      #puts "here is the output"
-      #puts session[:sort]
-      #sess = session[:sort]
-      #sort = params[:sort]
-      #order = nil
-
-      #if sort == 'title' || sess == 'title'
-      #  @title_header = 'hilite'
-      #end
-      #if sort == 'release_date' || sess == 'title'
-      #  @date_header = 'hilite'
-     # end
-
-      #@movies = Movie.order(sort)
-      #@all_ratings = Movie.ratings
-
-      #if params[:ratings].present?
-       # session[:filtered_ratings] = params[:ratings]
-        #@movies = Movie.where(:rating => session[:filtered_ratings].keys)
-
-
-
 
     if params[:ratings]
       session[:ratings] = params[:ratings]
@@ -42,18 +20,18 @@ class MoviesController < ApplicationController
       @selected_ratings = Hash[@all_ratings.zip([1,1,1,1])]
     end
 
-    sort = params[:sort]
-    if params[:sort] == 'title'
-      session[:sort] == 'title'
+    sort = params[:sort_by]
+    if params[:sort_by] == 'title'
+      session[:sort_by] == 'title'
       
-      @title = 'hilite'
+      #@title = 'hilite'
       @movies = Movie.order(sort).where(rating: @selected_ratings.keys)
-    elsif params[:sort] == 'release_date'
+    elsif params[:sort_by] == 'release_date'
       puts "Line 52"
-      @t = 'hilite'
+      #@t = 'hilite'
       @movies = Movie.order('release_date').where(rating: @selected_ratings.keys)
-    elsif session[:sort]
-      redirect_to movies_path(sort: session[:sort], rating: @selected_ratings.keys)
+    elsif session[:sort_by]
+      redirect_to movies_path(sort: session[:sort_by], rating: @selected_ratings.keys)
     else
       @movies = Movie.where(rating: @selected_ratings.keys)
     
