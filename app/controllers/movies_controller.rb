@@ -8,35 +8,49 @@ class MoviesController < ApplicationController
 
   def index
     
-    @all_ratings = Movie.ratings
-    puts @all_ratings
+    #@all_ratings = Movie.ratings
+    #puts @all_ratings
 
-    if params[:ratings]
-      session[:ratings] = params[:ratings]
-      @selected_ratings = params[:ratings]
-    elsif session[:ratings]
-      @selected_ratings = session[:ratings]
-    else
-      @selected_ratings = Hash[@all_ratings.zip([1,1,1,1])]
-    end
+    #if params[:ratings]
+      #session[:ratings] = params[:ratings]
+      #@selected_ratings = params[:ratings]
+    #elsif session[:ratings]
+      #@selected_ratings = session[:ratings]
+    #else
+      #@selected_ratings = Hash[@all_ratings.zip([1,1,1,1])]
+    #end
 
-    sort = params[:sort_by]
-    if params[:sort_by] == 'title'
-      session[:sort_by] == 'title'
+    #sort = params[:sort_by]
+    #if params[:sort_by] == 'title'
+      #session[:sort_by] == 'title'
       
-      #@title = 'hilite'
-      @movies = Movie.order(sort).where(rating: @selected_ratings.keys)
-    elsif params[:sort_by] == 'release_date'
-      puts "Line 52"
-      #@t = 'hilite'
-      @movies = Movie.order('release_date').where(rating: @selected_ratings.keys)
-    elsif session[:sort_by]
-      redirect_to movies_path(sort: session[:sort_by], rating: @selected_ratings.keys)
-    else
-      @movies = Movie.where(rating: @selected_ratings.keys)
+      #@movies = Movie.order(sort).where(rating: @selected_ratings.keys)
+    #elsif params[:sort_by] == 'release_date'
+      #puts "Line 52"
+      #@movies = Movie.order('release_date').where(rating: @selected_ratings.keys)
+    #elsif session[:sort_by]
+      #redirect_to movies_path(sort: session[:sort_by], rating: @selected_ratings.keys)
+    #else
+      #@movies = Movie.where(rating: @selected_ratings.keys)
     
-    end
+    #end
 
+    if params.key?(:sort_by)
+			session[:sort_by] = params[:sort_by]
+		elsif session.key?(:sort_by)
+			params[:sort_by] = session[:sort_by]
+			redirect_to movies_path(params) and return
+		end
+		@hilite = sort_by = session[:sort_by]
+		@all_ratings = Movie.all_ratings
+		if params.key?(:ratings)
+			session[:ratings] = params[:ratings]
+		elsif session.key?(:ratings)
+			params[:ratings] = session[:ratings]
+			redirect_to movies_path(params) and return
+		end
+		@checked_ratings = (session[:ratings].keys if session.key?(:ratings)) || @all_ratings
+    @movies = Movie.order(sort_by).where(rating: @checked_ratings)
 
   end
 
