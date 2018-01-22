@@ -42,7 +42,7 @@ class MoviesController < ApplicationController
 			redirect_to movies_path(params) and return
 		end
 		@hilite = sort_by = session[:sort_by]
-		@all_ratings = Movie.all_ratings
+		@all_ratings = Movie.ratings
 		if params.key?(:ratings)
 			session[:ratings] = params[:ratings]
 		elsif session.key?(:ratings)
