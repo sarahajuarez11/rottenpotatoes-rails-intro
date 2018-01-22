@@ -1,12 +1,6 @@
 class Movie < ActiveRecord::Base
 
-	def Movie.get_all_ratings
-		all_ratings = []
-		self.select(:rating).group(:rating).each do |mo|
-			all_ratings << mo.rating
-		end
-		return all_ratings
-	end
-
+	def self.ratings
+    	self.uniq.pluck(:rating).sort
+    end
 end
-© 2018 GitHub, Inc.

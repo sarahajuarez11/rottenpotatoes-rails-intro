@@ -7,40 +7,59 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings = Movie.get_all_ratings
+    
+    @all_ratings = Movie.ratings
+    puts @all_ratings
+      #puts "here is the output"
+      #puts session[:sort]
+      #sess = session[:sort]
+      #sort = params[:sort]
+      #order = nil
 
-    @checked_ratings = params[:ratings] if params.has_key? 'ratings'
-    @ordered_by = params[:order_by] if params.has_key? 'order_by'
+      #if sort == 'title' || sess == 'title'
+      #  @title_header = 'hilite'
+      #end
+      #if sort == 'release_date' || sess == 'title'
+      #  @date_header = 'hilite'
+     # end
 
-    # session.clear where user submit empty rating filters
-    if params.has_key? 'utf8'
-      session.delete :checked_ratings
-      session.delete :ordered_by
+      #@movies = Movie.order(sort)
+      #@all_ratings = Movie.ratings
+
+      #if params[:ratings].present?
+       # session[:filtered_ratings] = params[:ratings]
+        #@movies = Movie.where(:rating => session[:filtered_ratings].keys)
+
+
+
+
+    if params[:ratings]
+      session[:ratings] = params[:ratings]
+      @selected_ratings = params[:ratings]
+    elsif session[:ratings]
+      @selected_ratings = session[:ratings]
+    else
+      @selected_ratings = Hash[@all_ratings.zip([1,1,1,1])]
     end
 
-    # update session from incoming params
-    session[:checked_ratings] = @checked_ratings if @checked_ratings
-    session[:ordered_by] = @ordered_by if @ordered_by
-
-    if !@checked_ratings && !@ordered_by && session[:checked_ratings]
-      @checked_ratings = session[:checked_ratings] unless @checked_ratings
-      @ordered_by = session[:ordered_by] unless @ordered_by
-
-      flash.keep
-      redirect_to movies_path({order_by: @ordered_by, ratings: @checked_ratings})
+    sort = params[:sort]
+    if params[:sort] == 'title'
+      session[:sort] == 'title'
+      
+      @title = 'hilite'
+      @movies = Movie.order(sort).where(rating: @selected_ratings.keys)
+    elsif params[:sort] == 'release_date'
+      puts "Line 52"
+      @t = 'hilite'
+      @movies = Movie.order('release_date').where(rating: @selected_ratings.keys)
+    elsif session[:sort]
+      redirect_to movies_path(sort: session[:sort], rating: @selected_ratings.keys)
+    else
+      @movies = Movie.where(rating: @selected_ratings.keys)
+    
     end
 
-    if @checked_ratings
-      if @ordered_by      
-        @movies = Movie.find_all_by_rating(@checked_ratings, :order => "#{@ordered_by} asc")
-      else
-        @movies = Movie.find_all_by_rating(@checked_ratings)
-      end
-    elsif @ordered_by
-      @movies = Movie.all(:order => "#{@ordered_by} asc")
-    else 
-      @movies = Movie.all
-    end
+
   end
 
   def new
@@ -69,20 +88,6 @@ class MoviesController < ApplicationController
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
-  end
-
-  # find movies with same director
-  def same_director
-    movie = Movie.find(params[:id])
-    director_name = movie.director
-    
-    if not director_name or director_name.empty?
-      flash[:notice] = %Q{'#{movie.title}' has no director info}
-      redirect_to movies_path
-    else
-      @movies = Movie.find_all_by_director director_name
-      flash[:notice] = %Q{There are #{@movies.size} movie(s) with "#{director_name}" as director}
-    end
   end
 
 end
